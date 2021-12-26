@@ -1,0 +1,100 @@
+.e-mastertext {
+    font-size: 15px;
+    font-family: Roboto;
+    opacity: 0.87;
+    padding: 1em;
+}
+
+/* custom code start*/
+.e-toolbar-item.e-ghidden .e-btn {
+    background: rgba(0, 0, 0, 0.12);
+    border-color: rgba(0, 0, 0, 0.12);
+    color: #212121;
+}
+
+.text-danger {
+    color: red;
+}
+
+.mt-10 {
+    margin-top: 10px;
+}
+
+.mt-15 {
+    margin-top: 15px;
+}
+
+ejs-dialog {
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    width: 35% !important;
+}
+
+header {
+    background: #eee;
+    padding: 0.5em;
+    border-bottom: 1px solid #e0e0e0;
+    text-align: center;
+    margin: 8px;
+}
+
+.custom-card {
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    transition: 0.3s;
+    padding: 15px;
+}
+
+.custom-card:hover {
+    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+}
+
+.col-6 {
+    flex: 0 0 48%;
+    max-width: 48%;
+}
+
+.col-4 {
+    flex: 0 0 32%;
+    max-width: 32%;
+}
+
+.custom-row {
+    display: flex;
+}
+
+.flex-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+@media only screen and (max-width: 600px) {
+    ejs-dialog {
+        width: 100% !important;
+    }
+
+    .col-4 {
+        flex: 0 0 48%;
+        max-width: 48%;
+    }
+}
+
+@media (min-width: 601px) and (max-width: 900px) {
+    ejs-dialog {
+        width: 75% !important;
+    }
+}
+
+@media (min-width: 901px) and (max-width: 1200px) {
+    ejs-dialog {
+        width: 60% !important;
+    }
+}
+
+@media (min-width: 1201px) and (max-width: 1500px) {
+    ejs-dialog {
+        width: 50% !important;
+    }
+}

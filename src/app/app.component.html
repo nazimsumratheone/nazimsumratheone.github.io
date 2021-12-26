@@ -1,0 +1,143 @@
+<header class="header text-center">
+  <h2>Syncfusion EJ2 Angular TreeGrid</h2>
+</header>
+
+<ejs-treegrid *ngIf="display" #treegrid [dataSource]='data' height='100%' [treeColumnIndex]='1' childMapping='subUsers'
+  [columns]='columns' [selectionSettings]='selectionOptions' [allowResizing]='true' [allowFiltering]='allowFiltering'
+  [frozenColumns]='frozenColumns' [allowSorting]='true' [sortSettings]='sortSettings' [enableInfiniteScrolling]=true
+  (actionComplete)='actionHandler($event)'>
+</ejs-treegrid>
+
+<ejs-contextmenu *ngIf="display && colContextMenuDisplay" id='colContextmenu' #colContextmenu [target]='colTarget'
+  [items]='colMenuItems' (beforeItemRender)='colItemRender($event)' (beforeClose)='colBeforeClose($event)'
+  (select)="colItemSelect($event)" (beforeOpen)='onColContextMenuBeforeOpen($event)'>
+</ejs-contextmenu>
+
+<ejs-contextmenu *ngIf="rowContextMenuDisplay && display" id='rowContextmenu' #rowContextmenu [target]='rowTarget'
+  [items]='rowMenuItems' (beforeItemRender)='rowItemRender($event)' (beforeClose)='rowBeforeClose($event)'
+  (select)="rowItemSelect($event)" (beforeOpen)='onRowContextMenuBeforeOpen($event)'>
+</ejs-contextmenu>
+
+<ejs-dialog id='dialog' #ejDialog [header]='addUpdateLabel' [visible]='false'>
+  <ng-template #content>
+    <form [formGroup]="addColumnForm" (ngSubmit)="saveCol()">
+      <input type="hidden" formControlName="isColAdd" />
+      <div>
+        <div class="e-float-input e-control-wrapper">
+          <input formControlName="colName" type="text">
+          <span class="e-float-line"></span>
+          <label class="e-float-text e-label-top" for="ColName"> Column Name</label>
+        </div>
+        <span class="text-danger"
+          *ngIf="addColumnForm?.get('colName')?.hasError('required') && addColumnForm?.get('colName')?.touched"
+          class="text-danger">
+          *Column name is required
+        </span>
+      </div>
+      <div>
+        <div class="e-float-input e-control-wrapper">
+          <ejs-dropdownlist formControlName="colType" [dataSource]='colTypeSet' [fields]="fieldsvalues"
+            placeholder="Select Column Type" floatLabelType='Auto'></ejs-dropdownlist>
+        </div>
+      </div>
+      <div>
+        <div
+          *ngIf="addColumnForm?.get('colType')?.value == 'string' || addColumnForm?.get('colType')?.value == 'number'"
+          class="mt-10">
+          <div class="e-float-input e-control-wrapper">
+            <input formControlName="colValue"
+              [attr.type]="addColumnForm?.get('colType')?.value == 'string' ?  'text':'number'">
+            <span class="e-float-line"></span>
+            <label class="e-float-text e-label-top" for="ColValue"> Enter {{addColumnForm?.get('colType')?.value ==
+              'string'
+              ? 'Text' : 'Number'}}</label>
+          </div>
+        </div>
+        <div *ngIf="addColumnForm?.get('colType')?.value == 'Date'" class="mt-10">
+          <ejs-datepicker #ejDatePicker formControlName="colValue" name="datepicker" placeholder="Select Date"
+            floatLabelType='Auto'></ejs-datepicker>
+        </div>
+        <div *ngIf="addColumnForm?.get('colType')?.value == 'boolean'" class="mt-10">
+          <ul formControlName="colValue">
+            <li>
+              <ejs-radiobutton label="True" name="bool" type="checkbox"></ejs-radiobutton>
+            </li>
+            <li class="mt-10">
+              <ejs-radiobutton label="False" type="checkbox" name="bool"></ejs-radiobutton>
+            </li>
+          </ul>
+        </div>
+        <div *ngIf="addColumnForm?.get('colType')?.value == 'object'" class="mt-10">
+          <ejs-dropdownlist formControlName="colValue" [dataSource]='dropDownSet' placeholder="Select Default Value"
+            floatLabelType='Auto' showClearButton='true'></ejs-dropdownlist>
+        </div>
+        <span class="text-danger"
+          *ngIf="addColumnForm?.get('colValue')?.hasError('required') && addColumnForm?.get('colValue')?.touched"
+          class="text-danger">
+          *Column default value is required
+        </span>
+      </div>
+      <div class="mt-10">
+        <div class="custom-card mt-15">
+          <p class="pb-1 h6 border-bottom">Column Configurations</p>
+
+          <div class="pl-2">
+            <div class="form-row">
+              <div class="col-lg-4 col-md-6 col-sm-12 e-float-input e-control-wrapper">
+                <input type="number" formControlName="colMinWidth" />
+                <span class="e-float-line"></span>
+                <label class="e-float-text e-label-top" for="ColMinWidth"> Minimum Column Width</label>
+              </div>
+              <div class="col-lg-4 col-md-6 col-sm-12 e-float-input e-control-wrapper">
+                <input type="number" formControlName="colFontSize" />
+                <span class="e-float-line"></span>
+                <label class="e-float-text e-label-top" for="ColFontSize"> Font Size</label>
+              </div>
+              <div class="col-lg-4 col-md-6 col-sm-12">
+                <ejs-dropdownlist formControlName="colAlignment" [dataSource]='alignmentSet'
+                  placeholder="Select Alignment" floatLabelType='Auto' showClearButton='true'></ejs-dropdownlist>
+              </div>
+              <div class="col-lg-4 col-md-6 col-sm-12 mt-3">
+                <ejs-checkbox label="Text Wrap"></ejs-checkbox>
+              </div>
+              <div class="col-lg-4 col-md-6 col-sm-12 mt-3">
+                <input type="color" formControlName="colFontColor" />
+                <label class="ml-1" for="ColFontColor"> Font Color</label>
+              </div>
+              <div class="col-lg-4 col-md-6 col-sm-12 mt-3">
+                <input type="color" formControlName="colBgColor" />
+                <label class="ml-1" for="ColFontColor"> Background Color</label>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+      <div class="mt-15">
+        <button type="submit" ejs-button cssClass="e-info" [disabled]='addColumnForm.invalid'>Save</button>
+        <button type="button" ejs-button cssClass="e-danger" (click)="cancelCol()" class="ml-2">Cancel</button>
+      </div>
+    </form>
+  </ng-template>
+</ejs-dialog>
+
+<ejs-dialog id='dialog2' #chooseColDialog header='Choose Column' [visible]='false'>
+  <ng-template #content>
+    <form (ngSubmit)="chooseCol()">
+      <div class="row">
+        <div class="form-group col-md-3" *ngFor="let col of columns">
+          <div class="e-float-input e-control-wrapper">
+            <input type="checkbox" [id]="col.field" [checked]="col.visible == true"
+              (change)="changeChooseCol($event, col)">
+            <label class="e-float-text e-label-top" [for]="col.field">{{ col.headerText }}</label>
+          </div>
+        </div>
+      </div>
+      <div class="margin-top">
+        <button type="submit" ejs-button cssClass="e-info">Save</button>
+        <button type="button" ejs-button cssClass="e-danger" (click)="cancelChooseCol()"
+          class="margin-left">Cancel</button>
+      </div>
+    </form>
+  </ng-template>
+</ejs-dialog>
